@@ -90,6 +90,10 @@ def romanization(text):
                 text[line_count] = text[line_count].replace(localized_name[i], hepburn_name[i])
             line_count += 1
 
+    # Edge Cases
+    # "The 'jyu' in your name"
+    text[1917] = text[1917].replace("jyu", "juu")
+
     return text
 
 def name_order(text):
@@ -131,11 +135,11 @@ def honorifics(text_en, text_jp):
 
     line_count = 0
     for line_jp in text_jp:
-        for index in range(0, len(en_proper_name) - 1):
+        for index in range(len(en_proper_name)):
             en_name = [pre + en_proper_name[index] for pre in en_name_prefix]
             en_name_honorific = [en_proper_name[index] + suf for suf in en_honorific]
             jp_name = [jp_proper_name[index] + hon for hon in jp_honorific]
-            for index2 in range(0, len(jp_honorific) - 1):
+            for index2 in range(len(jp_honorific)):
                 if jp_name[index2] in line_jp:
                     for name in en_name:
                         if (name in text_en[line_count]) and (en_name_honorific[index2] not in text_en[line_count]):
@@ -163,7 +167,30 @@ def honorifics_special(text_en, text_jp):
                 if (en_name[i] in text_en[line_count]) and (en_name_honorific[i] not in text_en[line_count]):
                     text_en[line_count] = text_en[line_count].replace(en_name[i], en_name_honorific[i])
             line_count = line_count + 1
+
+    # Edge Cases
+    # Aozaki introduction => <蒼崎|あおざき><青子|あおこ>くん
+    text_en[380] = text_en[380].replace("Aoko", "Aoko-kun")
+    # Drop the honorific, an honorific mentioned without a name...
+    text_en[463] = text_en[463].replace("Miss", "-san")
+    # But should I use an honorific with you?
+    text_en[466] = text_en[466].replace("What do you mean, what do I mean?", "How I'm gonna call you. Is it fine if I use '-kun'?")
+
     return text_en
+
+def americanisms(text):
+
+    # 11th Grade => 2nd Year
+    text[559] = text[559].replace("11th grade", "2nd year")
+
+    return text
+
+def translation_mistakes(text):
+
+    # Get him out of his head
+    text[964] = text[964].replace("get him out of his head", "get him out of her head")
+
+    return text
 
 
 class Replacer:

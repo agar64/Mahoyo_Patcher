@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, QThread, Signal
 
 from mahoyo_extractor import Extractor
-from replacer import Replacer, metric, romanization, name_order, honorifics
+from replacer import Replacer, metric, romanization, name_order, honorifics, translation_mistakes
 
 # -----------------------
 # Constants
@@ -113,6 +113,8 @@ class PatchWorker(QThread):
             # --- Step 4: Applying Patches ---
             self.status_signal.emit("Processing text...")
 
+            text_en = translation_mistakes(text_en)
+
             if self.options['metric']:
                 text_en = metric(text_en)
                 self.progress_signal.emit(45)
@@ -162,7 +164,7 @@ class PatchWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Mahoyo Patcher")
+        self.setWindowTitle("Mahoyo Patcher v1.0")
         self.setMinimumWidth(480)
 
         # --- NEW ICON CODE ---
